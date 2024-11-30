@@ -1,0 +1,28 @@
+DELIMITER $$
+
+CREATE FUNCTION GetYearDifference(year INT) 
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE year_start_date DATE;
+    SET year_start_date = CONCAT(year, '-01-01');
+    RETURN TIMESTAMPDIFF(YEAR, year_start_date, CURDATE());
+END $$
+
+DELIMITER ;
+
+SELECT 
+    e.EntityName, 
+    e.Code, 
+    ic.Year, 
+    CONCAT(ic.Year, '-01-01') AS Start_Of_Year_Date, 
+    CURDATE() AS Current_Date_Value, 
+    GetYearDifference(ic.Year) AS Years_Difference
+FROM 
+    InfectiousCases ic
+JOIN 
+    Entities e ON ic.EntityID = e.EntityID
+WHERE 
+    ic.Number_rabies IS NOT NULL
+ORDER BY 
+    Years_Difference DESC;

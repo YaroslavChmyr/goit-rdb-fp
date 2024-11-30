@@ -1,0 +1,18 @@
+-- Пустий рядок '' не відфільтровано бо ці значення були замінені на NULL в нормалізованих таблицях  
+
+SELECT 
+    e.EntityName, 
+    e.Code, 
+    AVG(ic.Number_rabies) AS Average_Number_rabies,
+    MIN(ic.Number_rabies) AS Min_Number_rabies,
+    MAX(ic.Number_rabies) AS Max_Number_rabies,
+    SUM(ic.Number_rabies) AS Total_Number_rabies
+FROM 
+    InfectiousCases ic
+JOIN 
+    Entities e ON ic.EntityID = e.EntityID
+GROUP BY 
+    e.EntityName, e.Code
+ORDER BY 
+    Average_Number_rabies DESC
+LIMIT 10;

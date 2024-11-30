@@ -1,0 +1,46 @@
+CREATE TABLE Entities (
+    EntityID INT AUTO_INCREMENT PRIMARY KEY,
+    EntityName VARCHAR(255) NOT NULL,
+    Code VARCHAR(10) NOT NULL
+);
+
+INSERT INTO Entities (EntityName, Code)
+SELECT DISTINCT Entity, Code
+FROM infectious_cases;
+
+CREATE TABLE InfectiousCases (
+    CaseID INT AUTO_INCREMENT PRIMARY KEY,
+    EntityID INT NOT NULL,
+    Year YEAR NOT NULL,
+    Number_yaws FLOAT NULL,
+    polio_cases FLOAT NULL,
+    cases_guinea_worm FLOAT NULL,
+    Number_rabies FLOAT NULL,
+    Number_malaria FLOAT NULL,
+    Number_hiv FLOAT NULL,
+    Number_tuberculosis FLOAT NULL,
+    Number_smallpox FLOAT NULL,
+    Number_cholera_cases FLOAT NULL,
+    FOREIGN KEY (EntityID) REFERENCES Entities(EntityID)
+);
+
+INSERT INTO InfectiousCases (
+    EntityID, Year, Number_yaws, polio_cases, cases_guinea_worm, Number_rabies, 
+    Number_malaria, Number_hiv, Number_tuberculosis, Number_smallpox, Number_cholera_cases
+)
+SELECT 
+    e.EntityID, 
+    ic.Year, 
+    NULLIF(ic.Number_yaws, '') AS Number_yaws,
+    NULLIF(ic.polio_cases, '') AS polio_cases,
+    NULLIF(ic.cases_guinea_worm, '') AS cases_guinea_worm,
+    NULLIF(ic.Number_rabies, '') AS Number_rabies,
+    NULLIF(ic.Number_malaria, '') AS Number_malaria,
+    NULLIF(ic.Number_hiv, '') AS Number_hiv,
+    NULLIF(ic.Number_tuberculosis, '') AS Number_tuberculosis,
+    NULLIF(ic.Number_smallpox, '') AS Number_smallpox,
+    NULLIF(ic.Number_cholera_cases, '') AS Number_cholera_cases
+FROM 
+    infectious_cases ic
+JOIN 
+    Entities e ON ic.Entity = e.EntityName AND ic.Code = e.Code;
